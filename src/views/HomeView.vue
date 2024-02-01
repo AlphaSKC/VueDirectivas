@@ -25,6 +25,10 @@ const validateForm = () => {
     errors.value.push({ field: 'age', message: 'La edad debe estar entre 0 y 60 años' });
   }
 
+  if(!gender.value){
+    errors.value.push({field: 'gender', message: 'El genero es obligatorio'})
+  }
+
   if (gender.value === 'otro' && !other.value.trim()) {
     errors.value.push({ field: 'other', message: 'No puede quedar vacio el campo' });
   }
@@ -32,8 +36,8 @@ const validateForm = () => {
   isValid.value = errors.value.length === 0;
 };
 
-const clearErrors = (field?: string) => {
-  errors.value = field ? errors.value.filter(error => error.field !== field) : [];
+const clearErrors = () => {
+  errors.value = [];
 };
 
 onMounted(() => {
@@ -60,7 +64,7 @@ onMounted(() => {
       </div>
       <div class="container">
         <label>Edad:</label>
-        <input @input="validateForm()" v-model="age" type="number">
+        <input @input="validateForm()" v-model="age" type="number" min="0" max="60">
         <span v-if="errors.some(error => error.field === 'age')" class="error">
           {{ errors.find(error => error.field === 'age')?.message }}
         </span>
@@ -72,6 +76,9 @@ onMounted(() => {
           <option value="femenino">Femenino</option>
           <option value="otro">Otro</option>
         </select>
+        <span v-if="errors.some(error => error.field === 'gender')" class="error">
+          {{ errors.find(error => error.field === 'gender')?.message }}
+        </span>
         <div class="container" v-if="gender === 'otro'">
         <label>Otro:</label>
         <input @input="validateForm()" v-model="other" type="text" placeholder="Especifica otro género">
